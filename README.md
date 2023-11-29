@@ -21,7 +21,7 @@ dotnet run --project AdventOfCode.Day01
 
 # Rust
 
-Common, reusable functions are stored inside rust/common/
+Common, reusable functions are stored inside rust/common/src/
 
 ### Add individual day projects:
 ```
