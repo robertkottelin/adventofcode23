@@ -2,7 +2,7 @@
  
 ## .NET
 
-Common, reusable functions are stored inside cs/AdventOfCode.common/Class1.cs
+Common, reusable functions are stored inside cs/AdventOfCode.common/
 
 Add individual day projects:
     dotnet new console -n AdventOfCode.Day01
@@ -15,7 +15,7 @@ Build & Run:
 
 ## Rust
 
-Common, reusable functions are stored inside rust/common_functions/
+Common, reusable functions are stored inside rust/common/
 
 
 Add individual day projects:
