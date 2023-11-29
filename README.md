@@ -7,6 +7,10 @@ Ho-Ho-Ho! Implementing solutions in dotnet and rust.
 # .NET
 
 Common, reusable functions are stored inside cs/AdventOfCode.common/
+Import them inside the individual day project:
+```
+using AdventOfCode.Common;
+```
 
 ### Add individual day projects:
 ```
@@ -24,6 +28,11 @@ dotnet run --project AdventOfCode.Day01
 # Rust
 
 Common, reusable functions are stored inside rust/common/src/
+Import them inside the individual day Cargo.toml:
+```
+[dependencies]
+common = { path = "../common" }
+```
 
 ### Add individual day projects:
 ```
