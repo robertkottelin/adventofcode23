@@ -1,5 +1,7 @@
 # adventofcode23
- 
+
+Ho-Ho-Ho! Implementing solutions in dotnet and rust.
+
 ## .NET
 
 Common, reusable functions are stored inside cs/AdventOfCode.common/
