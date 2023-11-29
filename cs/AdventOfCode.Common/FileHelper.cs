@@ -9,6 +9,7 @@ namespace AdventOfCode.Common
         public static string[] ReadAllLines(string filePath)
         {
             return File.ReadAllLines(filePath);
+            
         }
 
         public static string ReadAllText(string filePath)
