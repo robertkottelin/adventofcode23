@@ -26,7 +26,7 @@ dotnet build AdventOfCode.sln
 dotnet run --project AdventOfCode.Day01
 ```
 
-# Rust
+# Rust [![rust](https://cdn3.emoji.gg/emojis/4504-rust.png)](https://emoji.gg/emoji/4504-rust)
 
 Common, reusable functions are stored inside rust/common/src/
 
