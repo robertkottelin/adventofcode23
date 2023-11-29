@@ -5,7 +5,6 @@ https://adventofcode.com/
 Ho-Ho-Ho! Implementing solutions in dotnet and rust.
 
 [![dotNET](https://cdn3.emoji.gg/emojis/6774_dotNET.png)](https://emoji.gg/emoji/6774_dotNET)
-# .NET
 
 Common, reusable functions are stored inside cs/AdventOfCode.common/
 
@@ -28,7 +27,6 @@ dotnet run --project AdventOfCode.Day01
 ```
 
 [![rust](https://cdn3.emoji.gg/emojis/4504-rust.png)](https://emoji.gg/emoji/4504-rust)
-# Rust 
 
 Common, reusable functions are stored inside rust/common/src/
 
