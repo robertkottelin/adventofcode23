@@ -49,47 +49,34 @@ fn main() -> io::Result<()> {
 }
 
 fn parse_game(line: &str) -> Option<(i32, Vec<(i32, i32, i32)>)> {
-    // Define the function `parse_game` that takes a string slice `line` and returns an Option type with a tuple.
-    // The tuple contains an integer (game ID) and a vector of integer triples (representing red, green, and blue cubes).
 
     let parts: Vec<&str> = line.split(": ").collect();
-    // Split the input line at ": " to separate the game ID and the sets of cubes. Collect the results into a vector `parts`.
 
     if parts.len() != 2 {
         return None;
     }
-    // Check if `parts` has exactly two elements (game ID and sets of cubes). If not, return None, indicating an invalid line format.
 
     let game_id = parts[0].trim_start_matches("Game ").parse::<i32>().ok()?;
-    // Extract the game ID from the first part, remove the "Game " prefix, parse it as an integer, and handle errors using `?` which returns None if parsing fails.
 
     let sets_str = parts[1].split("; ");
-    // Split the second part of `parts` at each "; " to separate individual sets of cubes.
 
     let mut sets = Vec::new();
-    // Create a mutable vector `sets` to store the sets of cubes.
 
     for set_str in sets_str {
-        // Iterate over each set of cubes represented as a string.
 
         let mut red = 0;
         let mut green = 0;
         let mut blue = 0;
-        // Initialize counters for red, green, and blue cubes to 0.
 
         for cube_str in set_str.split(", ") {
-            // Split each set into individual color counts separated by ", " and iterate over them.
 
             let cube_parts: Vec<&str> = cube_str.split_whitespace().collect();
-            // Split each color count at whitespace and collect into a vector `cube_parts`.
 
             if cube_parts.len() != 2 {
                 return None;
             }
-            // Check if `cube_parts` has exactly two elements (count and color). If not, return None, indicating an invalid format.
 
             let count = cube_parts[0].parse::<i32>().ok()?;
-            // Parse the first element of `cube_parts` as an integer (the count of cubes) and handle errors with `?`.
 
             match cube_parts[1] {
                 "red" => red = count,
@@ -97,13 +84,10 @@ fn parse_game(line: &str) -> Option<(i32, Vec<(i32, i32, i32)>)> {
                 "blue" => blue = count,
                 _ => return None,
             }
-            // Match the second element (color) and assign the parsed count to the corresponding color variable. Return None if the color is not recognized.
         }
 
         sets.push((red, green, blue));
-        // Push the tuple of counts (red, green, blue) for the current set into the `sets` vector.
     }
 
     Some((game_id, sets))
-    // Return Some with the tuple containing the game ID and the vector of sets of cubes.
 }
