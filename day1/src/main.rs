@@ -2,6 +2,7 @@ extern crate common;
 use common::file::read_lines;
 use std::io;
 
+// Part 1
 fn main() -> io::Result<()> {
     let lines = read_lines("data.txt")?;
 
@@ -21,3 +22,6 @@ fn main() -> io::Result<()> {
 
     Ok(())
 }
+
+// Part 2
+// ??
