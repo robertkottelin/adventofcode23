@@ -1,69 +1,66 @@
-use std::collections::HashSet;
+use std::{fs, collections::HashMap};
 
-fn sum_part_numbers(schematic: &[String]) -> i32 {
-    let mut sum = 0;
-    let mut counted = HashSet::new();
-    let rows = schematic.len();
-    let cols = schematic[0].len();
+fn main() {
+    // Read the input from the file
+    let input = fs::read_to_string("data.txt").expect("Failed to read file");
+    let lines = input.lines();
 
-    let is_symbol = |c: char| !c.is_digit(10) && c != '.';
+    let input = lines
+        .map(|line| line.chars().collect::<Vec<_>>())
+        .collect::<Vec<_>>();
 
-    for r in 0..rows {
-        for c in 0..cols {
-            // Check if the current character is a digit and not already counted
-            if schematic[r].as_bytes()[c].is_ascii_digit() && !counted.contains(&(r, c)) {
-                let mut adjacent_to_symbol = false;
+    let mut part_numbers = vec![];
+    let mut gears = HashMap::<(usize, usize), Vec<u32>>::new();
 
-                // Check all adjacent cells for a symbol
-                for dr in -1..=1 {
-                    for dc in -1..=1 {
-                        let new_r = r as i32 + dr;
-                        let new_c = c as i32 + dc;
+    'next_line: for (row, line) in input.iter().enumerate() {
+        let mut col1 = 0;
+        let mut col2;
+        while col1 < line.len() {
+            while !line[col1].is_numeric() {
+                col1 += 1;
+                if col1 >= line.len() {
+                    continue 'next_line;
+                }
+            }
+            col2 = col1;
+            while col2 < line.len() && line[col2].is_numeric() {
+                col2 += 1;
+            }
+            // number found
+            let n: String = line[col1..col2].iter().copied().collect();
+            let n: u32 = n.parse().unwrap();
+            // dbg!(n);
 
-                        if new_r >= 0 && new_r < rows as i32 && new_c >= 0 && new_c < cols as i32 {
-                            if is_symbol(schematic[new_r as usize].as_bytes()[new_c as usize] as char) {
-                                adjacent_to_symbol = true;
+            // check if it has a symbol in the neighborhood
+            let start_row = if row > 0 { row - 1 } else { 0 };
+            let end_row = (row + 2).min(input.len());
+            let start_col = if col1 > 0 { col1 - 1 } else { 0 };
+            let end_col = (col2 + 1).min(line.len());
+
+            'outer: for i in start_row..end_row {
+                for j in start_col..end_col {
+                    if !input[i][j].is_numeric() && input[i][j] != '.' {
+                        if input[i][j] == '*' {
+                            if let Some(parts) = gears.get_mut(&(i,j)) {
+                                parts.push(n);
+                            } else {
+                                gears.insert((i, j), vec![n]);
                             }
                         }
-                    }
-                }
-
-                if adjacent_to_symbol {
-                    // If adjacent to a symbol, parse the entire number
-                    let mut num_str = String::new();
-                    let mut cc = c;
-
-                    while cc < cols && schematic[r].as_bytes()[cc].is_ascii_digit() {
-                        num_str.push(schematic[r].as_bytes()[cc] as char);
-                        counted.insert((r, cc)); // Mark this digit as counted
-                        cc += 1;
-                    }
-
-                    if let Ok(num) = num_str.parse::<i32>() {
-                        sum += num;
+                        // println!("found {n} in row {row} col {col1}");
+                        part_numbers.push(n);
+                        break 'outer;
                     }
                 }
             }
+
+            col1 = col2;
         }
     }
 
-    sum
-}
+    let part1: u32 = part_numbers.iter().sum();
+    dbg!(part1);
 
-fn main() {
-    let schematic = vec![
-        "467..114..".to_string(),
-        "...*......".to_string(),
-        "..35..633.".to_string(),
-        "......#...".to_string(),
-        "617*......".to_string(),
-        ".....+.58.".to_string(),
-        "..592.....".to_string(),
-        "......755.".to_string(),
-        "...$.*....".to_string(),
-        ".664.598..".to_string(),
-    ];
-
-    let result = sum_part_numbers(&schematic);
-    println!("Sum of part numbers: {}", result);
+    let part2: u32 = gears.into_values().filter(|g| g.len() == 2).map(|g| g.into_iter().product::<u32>()).sum();
+    dbg!(part2);
 }
