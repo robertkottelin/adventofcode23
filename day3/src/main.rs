@@ -10,12 +10,15 @@ fn main() {
         .collect::<Vec<_>>();
 
     let mut part_numbers = vec![];
+
+    // Initialize a HashMap to store gears, each with a location and associated numbers
     let mut gears = HashMap::<(usize, usize), Vec<u32>>::new();
 
     'next_line: for (row, line) in input.iter().enumerate() {
         let mut col1 = 0;
         let mut col2;
         while col1 < line.len() {
+            // Skip non-numeric characters
             while !line[col1].is_numeric() {
                 col1 += 1;
                 if col1 >= line.len() {
@@ -47,7 +50,7 @@ fn main() {
                                 gears.insert((i, j), vec![n]);
                             }
                         }
-                        // println!("found {n} in row {row} col {col1}");
+                        println!("found {n} in row {row} col {col1}");
                         part_numbers.push(n);
                         break 'outer;
                     }

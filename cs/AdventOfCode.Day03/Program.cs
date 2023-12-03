@@ -1,76 +1,78 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 class Program
 {
     static void Main()
     {
-        string[] schematic = {
-            "467..114..",
-            "...*......",
-            "..35..633.",
-            "......#...",
-            "617*......",
-            ".....+.58.",
-            "..592.....",
-            "......755.",
-            "...$.*....",
-            ".664.598.."
-        };
+        // Read the input from the file
+        var input = File.ReadAllLines("data.txt");
 
-        int sum = SumNumbers(schematic);
-        Console.WriteLine($"The sum of all part numbers is: {sum}");
-    }
+        var partNumbers = new List<uint>();
+        var gears = new Dictionary<(int, int), List<uint>>();
 
-    static int SumNumbers(string[] schematic)
-    {
-        int sum = 0;
-
-        for (int i = 0; i < schematic.Length; i++)
+        for (int row = 0; row < input.Length; row++)
         {
-            for (int j = 0; j < schematic[i].Length; j++)
+            var line = input[row].ToCharArray();
+            int col1 = 0;
+
+            while (col1 < line.Length)
             {
-                if (Char.IsDigit(schematic[i][j]))
+                while (col1 < line.Length && !char.IsDigit(line[col1]))
                 {
-                    string numberStr = ExtractNumber(schematic, i, j);
-                    if (IsAdjacentToSymbol(schematic, i, j, numberStr.Length))
+                    col1++;
+                }
+
+                if (col1 >= line.Length) break;
+
+                int col2 = col1;
+                while (col2 < line.Length && char.IsDigit(line[col2]))
+                {
+                    col2++;
+                }
+
+                // Number found
+                var numberString = new String(line[col1..col2]);
+                if (uint.TryParse(numberString, out uint number))
+                {
+                    int startRow = row > 0 ? row - 1 : 0;
+                    int endRow = Math.Min(row + 2, input.Length);
+                    int startCol = col1 > 0 ? col1 - 1 : 0;
+                    int endCol = Math.Min(col2 + 1, line.Length);
+
+                    for (int i = startRow; i < endRow; i++)
                     {
-                        sum += int.Parse(numberStr);
+                        for (int j = startCol; j < endCol; j++)
+                        {
+                            if (!char.IsDigit(input[i][j]) && input[i][j] != '.')
+                            {
+                                if (input[i][j] == '*')
+                                {
+                                    if (!gears.ContainsKey((i, j)))
+                                    {
+                                        gears.Add((i, j), new List<uint>());
+                                    }
+                                    gears[(i, j)].Add(number);
+                                }
+                                partNumbers.Add(number);
+                                goto NextNumber;
+                            }
+                        }
                     }
                 }
+
+                NextNumber:
+                col1 = col2;
             }
         }
-        return sum;
-    }
 
-    static string ExtractNumber(string[] schematic, int x, int y)
-    {
-        string numberStr = "";
-        while (y < schematic[x].Length && Char.IsDigit(schematic[x][y]))
-        {
-            numberStr += schematic[x][y];
-            y++;
-        }
-        return numberStr;
-    }
+        uint part1 = (uint)partNumbers.Sum(x => (long)x);
+        Console.WriteLine($"Part 1: {part1}");
 
-    static bool IsAdjacentToSymbol(string[] schematic, int x, int y, int length)
-    {
-        for (int i = -1; i <= 1; i++)
-        {
-            for (int j = -1; j <= length; j++)
-            {
-                int newX = x + i;
-                int newY = y + j - 1; // Adjust for the length of the number
+        uint part2 = (uint)gears.Values.Where(g => g.Count == 2).Sum(g => g.Aggregate(1L, (a, b) => a * b));
+        Console.WriteLine($"Part 2: {part2}");
 
-                if (newX >= 0 && newX < schematic.Length && newY >= 0 && newY < schematic[newX].Length)
-                {
-                    if (!Char.IsDigit(schematic[newX][newY]) && schematic[newX][newY] != '.')
-                    {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
     }
 }
